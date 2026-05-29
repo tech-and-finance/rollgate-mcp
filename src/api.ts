@@ -14,13 +14,13 @@ export class RollgateClient {
 
   async request<T = unknown>(
     path: string,
-    init: RequestInit & { body?: unknown } = {},
+    init: { method?: string; body?: unknown; headers?: Record<string, string> } = {},
   ): Promise<T> {
-    const { body, ...rest } = init;
+    const { body, method, headers: customHeaders } = init;
     const headers: Record<string, string> = {
       Authorization: `Bearer ${this.config.apiKey}`,
       Accept: 'application/json',
-      ...((rest.headers as Record<string, string>) ?? {}),
+      ...(customHeaders ?? {}),
     };
     if (body !== undefined) {
       headers['Content-Type'] = 'application/json';
@@ -28,7 +28,7 @@ export class RollgateClient {
 
     const url = `${this.config.apiUrl}${path}`;
     const response = await fetch(url, {
-      ...rest,
+      method,
       headers,
       body: body === undefined ? undefined : JSON.stringify(body),
     });

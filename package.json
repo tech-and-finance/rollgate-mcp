@@ -1,6 +1,6 @@
 {
   "name": "rollgate-mcp",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Rollgate MCP server — manage Rollgate feature flags from Claude, Cursor, Codex and any MCP-compatible client.",
   "license": "MIT",
   "type": "module",

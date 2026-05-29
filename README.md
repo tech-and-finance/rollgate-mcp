@@ -2,7 +2,7 @@
 
 Manage Rollgate feature flags from Claude Code, Cursor, Codex, Continue, Cline or any [MCP-compatible](https://modelcontextprotocol.io) client.
 
-> Status: **alpha (v0.1, Day 3 scoping)**. 1 tool implemented (`list_feature_flags`) as template. 7 additional tools planned per [ADR](https://github.com/tech-and-finance/rollgate/blob/main/Vault/Decisions/rollgate-mcp-server-design.md).
+> Status: **beta (v0.2, Day 3 full)**. 8 MVP tools implemented per ADR scope. Day 4 = npm publish + distribuzione (glama.ai + r/mcp + dev.to).
 
 ## Quickstart
 
@@ -60,23 +60,18 @@ Example config file:
 }
 ```
 
-## Tools (v0.1)
+## Tools (v0.2 — 8 MVP)
 
 | Tool | Description |
 |---|---|
-| `list_feature_flags` | List flags in the configured project, with optional filters. |
-
-### Roadmap (Day 3 full)
-
-| Tool | Description |
-|---|---|
+| `list_feature_flags` | List flags in the configured project, with optional filters (search, tags, status). |
 | `create_feature_flag` | Create a new boolean / string / number / json flag. |
-| `get_feature_flag` | Get a flag by key or id, optionally with state in a given environment. |
-| `update_feature_flag` | Update flag metadata (name, description, tags). |
-| `delete_feature_flag` | Delete a flag. |
-| `toggle_flag_in_environment` | Toggle a flag on/off in a specific environment. |
-| `set_flag_rollout` | Set rollout percentage, target users, or rules. |
-| `detect_existing_flag` | Fuzzy-match an intent against existing flags to avoid duplicates. |
+| `get_feature_flag` | Get a flag by id or key, optionally with state in a given environment. |
+| `update_feature_flag` | Update flag metadata (name, description, category, tags). |
+| `delete_feature_flag` | Delete a flag permanently. |
+| `toggle_flag_in_environment` | Toggle a flag ON/OFF in a specific environment. |
+| `set_flag_rollout` | Set rollout percentage, target users, or targeting rules in an environment. |
+| `detect_existing_flag` | Search existing flags by intent before creating duplicates. |
 
 ## Development
 
