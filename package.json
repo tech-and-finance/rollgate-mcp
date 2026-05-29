@@ -1,0 +1,47 @@
+{
+  "name": "rollgate-mcp",
+  "version": "0.1.0",
+  "description": "Rollgate MCP server — manage Rollgate feature flags from Claude, Cursor, Codex and any MCP-compatible client.",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "rollgate-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "prepublishOnly": "npm run build"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "feature-flags",
+    "rollgate",
+    "claude",
+    "cursor",
+    "ai"
+  ],
+  "homepage": "https://rollgate.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tech-and-finance/rollgate-mcp.git"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.4.0"
+  }
+}
