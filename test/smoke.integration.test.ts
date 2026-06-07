@@ -7,6 +7,12 @@ import { listFeatureFlags } from '../src/tools/list_feature_flags.js';
 import { toggleFlagInEnvironment } from '../src/tools/toggle_flag_in_environment.js';
 import { deleteFeatureFlag } from '../src/tools/delete_feature_flag.js';
 
+const envId = process.env.ROLLGATE_ENV_ID!;
+
+interface FlagWithState {
+  state?: { enabled?: boolean };
+}
+
 /**
  * Smoke integration end-to-end contro un Rollgate reale (staging consigliato).
  *
@@ -71,11 +77,24 @@ describe.runIf(hasCreds)('smoke integration — real Rollgate', () => {
     expect(res.flags.some((f) => f.key === uniqueKey)).toBe(true);
   });
 
-  it('toggle_flag_in_environment → abilita senza errore', async () => {
+  it('toggle_flag_in_environment → lo stato letto riflette davvero il cambio', async () => {
     expect(createdFlagId).toBeTruthy();
-    await expect(
-      toggleFlagInEnvironment(client, { flag_id: createdFlagId!, enabled: true }),
-    ).resolves.toBeDefined();
+
+    // ON → read-back enabled=true (esclude un toggle no-op che risponde 200)
+    await toggleFlagInEnvironment(client, { flag_id: createdFlagId!, enabled: true });
+    const afterOn = (await getFeatureFlag(client, {
+      flag_id: createdFlagId!,
+      environment_id: envId,
+    })) as FlagWithState;
+    expect(afterOn.state?.enabled).toBe(true);
+
+    // OFF → read-back enabled=false (conferma che lo stato è realmente mutabile)
+    await toggleFlagInEnvironment(client, { flag_id: createdFlagId!, enabled: false });
+    const afterOff = (await getFeatureFlag(client, {
+      flag_id: createdFlagId!,
+      environment_id: envId,
+    })) as FlagWithState;
+    expect(afterOff.state?.enabled).toBe(false);
   });
 
   it('delete_feature_flag → rimuove il flag throwaway', async () => {

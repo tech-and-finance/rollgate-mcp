@@ -44,7 +44,17 @@ export class RollgateClient {
 
     const text = await response.text();
     if (!text) return undefined as T;
-    return JSON.parse(text) as T;
+    try {
+      return JSON.parse(text) as T;
+    } catch {
+      // Una 2xx con body non-JSON (proxy/WAF/captive-portal che risponde HTML
+      // con status 200) altrimenti esploderebbe come SyntaxError opaco. Lo
+      // rimappiamo su RollgateAPIError così l'errore resta diagnosticabile.
+      throw new RollgateAPIError(
+        response.status,
+        `Malformed (non-JSON) response body: ${text.slice(0, 500)}`,
+      );
+    }
   }
 
   // Helpers per scope-resolution: il middleware backend RequireMCPToken

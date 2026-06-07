@@ -42,7 +42,10 @@ export function loadConfig(): RollgateMCPConfig {
     }
   }
 
-  const apiKey = process.env.ROLLGATE_API_KEY ?? fileConfig.apiKey;
+  // .trim() difende dal copy-paste con whitespace/newline finale: senza,
+  // un token "rgmcp_xxx \n" passa il check di prefisso ma produce un header
+  // `Bearer rgmcp_xxx ` che il backend rifiuta con un 401 poco diagnosticabile.
+  const apiKey = (process.env.ROLLGATE_API_KEY ?? fileConfig.apiKey)?.trim();
   if (!apiKey) {
     throw new Error(
       'Missing Rollgate MCP token. Set ROLLGATE_API_KEY env var or add "apiKey" to ~/.config/rollgate-mcp/config.json. ' +

@@ -85,6 +85,15 @@ describe('RollgateClient.request', () => {
     await expect(client.request('/api/v1/flags/x')).resolves.toBeUndefined();
   });
 
+  it('rimappa una 2xx con body non-JSON su RollgateAPIError (no SyntaxError grezzo)', async () => {
+    mockFetch({ status: 200, text: '<html><body>502 Bad Gateway</body></html>' });
+    const client = new RollgateClient(baseConfig);
+
+    const err = await client.request('/api/v1/flags').catch((e: unknown) => e);
+    expect(err).toBeInstanceOf(RollgateAPIError);
+    expect((err as RollgateAPIError).body).toContain('Malformed (non-JSON)');
+  });
+
   it('lancia RollgateAPIError con status + body su risposta non-ok', async () => {
     mockFetch({ ok: false, status: 403, text: 'forbidden: scope flags:rw required' });
     const client = new RollgateClient(baseConfig);

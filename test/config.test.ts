@@ -39,6 +39,16 @@ describe('loadConfig — env vars', () => {
     expect(loadConfig().apiUrl).toBe('https://api-staging.rollgate.io');
   });
 
+  it('trimma whitespace/newline dal token (copy-paste safe)', () => {
+    vi.stubEnv('ROLLGATE_API_KEY', '  rgmcp_abc123\n');
+    expect(loadConfig().apiKey).toBe('rgmcp_abc123');
+  });
+
+  it('un token di soli spazi viene trattato come assente', () => {
+    vi.stubEnv('ROLLGATE_API_KEY', '   ');
+    expect(() => loadConfig()).toThrow(/Missing Rollgate MCP token/);
+  });
+
   it('mappa org/project/env da env vars', () => {
     vi.stubEnv('ROLLGATE_API_KEY', 'rgmcp_abc123');
     vi.stubEnv('ROLLGATE_ORG_ID', 'org-1');
